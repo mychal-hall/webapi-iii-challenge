@@ -30,11 +30,9 @@ router.delete("/:id", validatePostId, async (req, res) => {
   try {
     const count = await Posts.remove(req.params.id);
     if (count > 0) {
-      res
-        .status(200)
-        .json({
-          message: "The post is gone, but the internet will always remember"
-        });
+      res.status(200).json({
+        message: "The post is gone, but the internet will always remember"
+      });
     } else {
       res.status(404).json({ message: "The post could not be found" });
     }
@@ -45,7 +43,20 @@ router.delete("/:id", validatePostId, async (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", validatePostId, async (req, res) => {
+  try {
+    const post = await Posts.update(req.params.id, req.body);
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404).json({ message: "The post could not be found" });
+    }
+  } catch (error) {
+    // log error to the server
+    console.log(error);
+    res.status(500).json({ message: "Error updating the post!" });
+  }
+});
 
 // custom middleware
 
