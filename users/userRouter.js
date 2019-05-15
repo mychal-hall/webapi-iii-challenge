@@ -51,7 +51,17 @@ async function validateUserId(req, res, next) {
   }
 }
 
-function validateUser(req, res, next) {}
+function validateUser(req, res, next) {
+  if (req.body && Pbject.keys(req.body).length) {
+    if (req.body.name !== "") {
+      next();
+    } else {
+      res.status(400).json({ message: "Please include a name for the user" });
+    }
+  } else {
+    res.status(400).json({ message: "Error -- Missing vital data" });
+  }
+}
 
 function validatePost(req, res, next) {}
 
