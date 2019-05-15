@@ -59,10 +59,22 @@ function validateUser(req, res, next) {
       res.status(400).json({ message: "Please include a name for the user" });
     }
   } else {
-    res.status(400).json({ message: "Error -- Missing vital data" });
+    res.status(500).json({ message: "Error -- Missing vital data" });
   }
 }
 
-function validatePost(req, res, next) {}
+function validatePost(req, res, next) {
+  if (req.body && Object.keys(req.body).length) {
+    if (req.body.text !== "") {
+      next();
+    } else {
+      res
+        .status(400)
+        .json({ message: "Please include a body in the the post" });
+    }
+  } else {
+    res.status(500).json({ message: "Error -- Missing vital data" });
+  }
+}
 
 module.exports = router;
