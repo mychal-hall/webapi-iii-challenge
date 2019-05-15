@@ -24,7 +24,16 @@ router.get("/:id", validateUserId, async (req, res) => {
 });
 
 // /api/users
-router.post("/", async (req, res) => {});
+router.post("/", validateUser, async (req, res) => {
+  try {
+    const user = await Users.insert(req.body);
+    res.status(201).json(user);
+  } catch (error) {
+    // console log error
+    console.log(error);
+    res.status(500).json({ message: "Error creating a user. Nice work." });
+  }
+});
 
 router.post("/:id/posts", (req, res) => {});
 
@@ -52,7 +61,7 @@ async function validateUserId(req, res, next) {
 }
 
 function validateUser(req, res, next) {
-  if (req.body && Pbject.keys(req.body).length) {
+  if (req.body && Object.keys(req.body).length) {
     if (req.body.name !== "") {
       next();
     } else {
