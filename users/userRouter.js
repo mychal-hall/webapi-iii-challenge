@@ -59,9 +59,40 @@ router.get("/:id/posts", validateUserId, async (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", validateUserId, async (req, res) => {
+  try {
+    const count = await Users.remove(req.params.id);
+    if (count > 0) {
+      res
+        .status(200)
+        .json({
+          message:
+            "The user has been removed, but the internet will always remember"
+        });
+    } else {
+      res.status(404).json({ message: "That's not a real user, genius!" });
+    }
+  } catch (error) {
+    // log error to the server
+    console.log(error);
+    res.status(500).json({ message: "Error -- Could not find user." });
+  }
+});
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", validateUserId, validateUser, async (req, res) => {
+  try {
+    const user = await Users.update(req.params.id, req.body);
+    if (user) {
+      res.status(200).json({ id: req.params.id, ...req.body });
+    } else {
+      res.status(404).json({ message: "Error -- Could not find user." });
+    }
+  } catch (error) {
+    // log error to server
+    console.log(error);
+    res.status(500).json({ message: "Error -- Could not Update the user." });
+  }
+});
 
 //custom middleware
 
